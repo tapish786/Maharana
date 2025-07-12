@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register User – Skill Swap</title>
+</head>
+<body>
+  <h2>Register New User</h2>
+
+  <form id="registerForm">
+    <label>Name:</label><br>
+    <input type="text" name="name" required><br><br>
+
+    <label>Location:</label><br>
+    <input type="text" name="location"><br><br>
+
+    <label>Availability:</label><br>
+    <input type="text" name="availability"><br><br>
+
+    <label>Make Public:</label>
+    <input type="checkbox" name="is_public" checked><br><br>
+
+    <button type="submit">Register</button>
+  </form>
+
+  <p id="responseBox"></p>
+
+  <script>
+    const form = document.getElementById("registerForm");
+    const responseBox = document.getElementById("responseBox");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const data = {
+        name: formData.get("name"),
+        location: formData.get("location"),
+        availability: formData.get("availability"),
+        is_public: formData.get("is_public") === "on"
+      };
+
+      fetch("http://localhost:5000/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+        .then(res => res.json())
+        .then(result => {
+          responseBox.innerText = JSON.stringify(result, null, 2);
+        })
+        .catch(err => {
+          responseBox.innerText = "Error: " + err.message;
+        });
+    });
+  </script>
+</body>
+</html>
